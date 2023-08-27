@@ -30,7 +30,9 @@ set(qt6_libraries
 ament_auto_find_build_dependencies()
 
 qt_add_library(shared_signal
+  include/joint_trajectory_publisher_gui/joint_configuration.hpp
   include/joint_trajectory_publisher_gui/shared_signal.hpp
+  src/joint_configuration.cpp
   src/shared_signal.cpp
 )
 target_include_directories(shared_signal

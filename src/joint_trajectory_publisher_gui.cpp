@@ -1,3 +1,5 @@
+#include <csignal>
+
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
@@ -8,8 +10,12 @@
 #include <joint_trajectory_publisher_gui/node_spinner.hpp>
 
 
+void signal_handler(const int signal_number);
+
 auto main(int argc, char ** argv) -> int
 {
+  signal(SIGINT, signal_handler);
+
   const QUrl main_qml_url(
     u"qrc:/joint_trajectory_publisher_gui/qml/joint_trajectory_publisher_gui.qml"_qs);
 
@@ -52,4 +58,12 @@ auto main(int argc, char ** argv) -> int
   qml_app_engine.load(main_qml_url);
 
   return gui_app.exec();
+}
+
+void signal_handler(const int signal_number)
+{
+  if (signal_number == SIGINT) {
+    rclcpp::shutdown();
+    QCoreApplication::exit();
+  }
 }

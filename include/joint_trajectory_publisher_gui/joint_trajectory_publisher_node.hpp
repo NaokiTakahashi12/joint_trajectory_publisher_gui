@@ -3,6 +3,8 @@
 #include <rclcpp/rclcpp.hpp>
 
 #include <memory>
+#include <string>
+#include <vector>
 
 #include <std_msgs/msg/string.hpp>
 #include <trajectory_msgs/msg/joint_trajectory.hpp>
@@ -23,6 +25,8 @@ public:
   void registerSharedSignal(SharedSignal::SharedPtr);
 
 private:
+  std::vector<std::string> m_moveable_joint_names;
+
   rclcpp::Subscription<std_msgs::msg::String>::SharedPtr m_robot_description_subscriber;
   rclcpp::Publisher<trajectory_msgs::msg::JointTrajectory>::SharedPtr m_joint_trajectory_publisher;
 
