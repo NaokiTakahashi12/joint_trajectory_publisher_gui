@@ -8,7 +8,7 @@ endif()
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(gui_executable gui)
+set(gui_executable joint_trajectory_publisher_gui_node)
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
@@ -29,26 +29,25 @@ set(qt6_libraries
 
 ament_auto_find_build_dependencies()
 
-qt_add_library(shared_signal
+qt_add_library(qt6_common
   include/joint_trajectory_publisher_gui/joint_configuration.hpp
-  include/joint_trajectory_publisher_gui/shared_signal.hpp
   src/joint_configuration.cpp
-  src/shared_signal.cpp
 )
-target_include_directories(shared_signal
+target_include_directories(qt6_common
   PUBLIC
     include
 )
-target_link_libraries(shared_signal
-  ${qt6_libraries}
+target_link_libraries(qt6_common
+  PUBLIC
+    ${qt6_libraries}
 )
 
 ament_auto_add_library(${PROJECT_NAME} SHARED
+  include/joint_trajectory_publisher_gui/joint_trajectory_publisher_node.hpp
   src/joint_trajectory_publisher_node.cpp
 )
 target_link_libraries(${PROJECT_NAME}
-  ${qt6_libraries}
-  shared_signal
+  qt6_common
 )
 rclcpp_components_register_node(${PROJECT_NAME}
   PLUGIN "joint_trajectory_publisher_gui::JointTrajectoryPublisherNode"

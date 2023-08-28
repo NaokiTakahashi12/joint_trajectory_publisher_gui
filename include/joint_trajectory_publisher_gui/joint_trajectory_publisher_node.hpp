@@ -6,31 +6,37 @@
 #include <string>
 #include <vector>
 
+#include <QObject>
 #include <std_msgs/msg/string.hpp>
 #include <trajectory_msgs/msg/joint_trajectory.hpp>
 
-#include "shared_signal.hpp"
+#include "joint_configuration.hpp"
 
 
 namespace joint_trajectory_publisher_gui
 {
-class JointTrajectoryPublisherNode : public rclcpp::Node
+class JointTrajectoryPublisherNode : public QObject, public rclcpp::Node
 {
+  Q_OBJECT
+
 public:
   using SharedPtr = std::shared_ptr<JointTrajectoryPublisherNode>;
 
-  JointTrajectoryPublisherNode(const rclcpp::NodeOptions &);
+  JointTrajectoryPublisherNode(const rclcpp::NodeOptions &, QObject * parent = nullptr);
   ~JointTrajectoryPublisherNode();
 
-  void registerSharedSignal(SharedSignal::SharedPtr);
+public slots:
+  void publishJointAngulerPositions(const std::vector<double> &);
+
+signals:
+  void robotDescriptionUpdated(const QString &);
+  void jointConfigurationChanged(const JointConfigurations &);
 
 private:
   std::vector<std::string> m_moveable_joint_names;
 
   rclcpp::Subscription<std_msgs::msg::String>::SharedPtr m_robot_description_subscriber;
   rclcpp::Publisher<trajectory_msgs::msg::JointTrajectory>::SharedPtr m_joint_trajectory_publisher;
-
-  SharedSignal::SharedPtr m_shared_signal;
 
   void robotDescriptionSubscribeCallback(std_msgs::msg::String::ConstSharedPtr);
 };
