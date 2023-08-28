@@ -53,13 +53,13 @@ Window {
         }
     }
     Connections {
-        target: nodeSharedSignal
+        target: rclNode
         function onRobotDescriptionUpdated(robotName) {
             robotNameText.text = robotName
         }
     }
     Connections {
-        target: nodeSharedSignal
+        target: rclNode
         function onJointConfigurationChanged(jointConfigurations) {
             jointTrajectoryLabelRepeater.model = jointConfigurations
         }
@@ -71,7 +71,7 @@ Window {
             for (var i = 0; i < jointTrajectoryLabelRepeater.model.length; i++) {
                 destPositions[i] = jointTrajectoryLabelRepeater.itemAt(i).value;
             }
-            nodeSharedSignal.publishJointAngulerPositions(destPositions)
+            rclNode.publishJointAngulerPositions(destPositions)
         }
     }
     Shortcuts {}

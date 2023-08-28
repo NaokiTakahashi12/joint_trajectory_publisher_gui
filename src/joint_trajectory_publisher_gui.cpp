@@ -5,7 +5,6 @@
 #include <QQmlContext>
 #include <rclcpp/rclcpp.hpp>
 
-#include <joint_trajectory_publisher_gui/shared_signal.hpp>
 #include <joint_trajectory_publisher_gui/joint_trajectory_publisher_node.hpp>
 #include <joint_trajectory_publisher_gui/node_spinner.hpp>
 
@@ -23,24 +22,17 @@ auto main(int argc, char ** argv) -> int
   QQmlApplicationEngine qml_app_engine;
 
   joint_trajectory_publisher_gui::NodeSpinner::SharedPtr node_spinner;
-  joint_trajectory_publisher_gui::SharedSignal::SharedPtr shared_node_signal;
   std::shared_ptr<joint_trajectory_publisher_gui::JointTrajectoryPublisherNode> rcl_node;
 
-  shared_node_signal = std::make_shared<joint_trajectory_publisher_gui::SharedSignal>(
-    &gui_app
-  );
   node_spinner = std::make_shared<joint_trajectory_publisher_gui::NodeSpinner>(
-    argc,
-    argv,
-    &gui_app
+    argc, argv, &gui_app
   );
   rcl_node = std::make_shared<joint_trajectory_publisher_gui::JointTrajectoryPublisherNode>(
     node_spinner->getNodeOptions()
   );
-  rcl_node->registerSharedSignal(shared_node_signal);
   node_spinner->addNode(rcl_node);
 
-  qml_app_engine.rootContext()->setContextProperty("nodeSharedSignal", shared_node_signal.get());
+  qml_app_engine.rootContext()->setContextProperty("rclNode", rcl_node.get());
   qml_app_engine.rootContext()->setContextProperty("nodeSpinner", node_spinner.get());
 
   QObject::connect(
